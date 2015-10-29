@@ -21,7 +21,10 @@ Step 2. Or manually invoke the shipped `bin/composer`:
     bin/composer self-update
     # This install all application required libraries for first time
     bin/composer install
-    bin/composer dump-autoload --optimize
+
+Step 3. Configure project:
+    cp config/autoload/local.php.dist config/autoload/local.php
+    vim config/autoload/local.php
 
 Step 4. Import DB data
     data/schema.sql
