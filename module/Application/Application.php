@@ -3,6 +3,7 @@
 namespace Application;
 
 use Application\Model\Config;
+use Application\Service\ServiceManager;
 
 /**
  * Class responsible for application logic:
@@ -24,6 +25,11 @@ class Application
      * @var Config
      */
     private $config;
+
+    /**
+     * @var ServiceManager
+     */
+    private $serviceManager;
 
     /**
      * Time system was started
@@ -133,11 +139,34 @@ class Application
      */
     public function config($paramName)
     {
-        if (isset($this->config[$paramName])) {
-            return $this->config[$paramName];
-        } else {
-            throw new \InvalidArgumentException('I dont know such configuration: '.$paramName);
+        return $this->getConfig()->get($paramName);
+    }
+
+    /**
+     * Retrieves serviceManager.
+     *
+     * @return ServiceManager
+     */
+    public function getServiceManager()
+    {
+        if (!isset($this->serviceManager)) {
+            $this->serviceManager = new ServiceManager();
         }
+
+        return $this->serviceManager;
+    }
+
+    /**
+     * Sets serviceManager.
+     *
+     * @param ServiceManager $serviceManager
+     * @return Application
+     */
+    public function setServiceManager($serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
+
+        return $this;
     }
 
     /**
