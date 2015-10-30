@@ -17,6 +17,7 @@ try {
         'contacts' => $contactRepository->fetchSupervisedPersons($masterContacts)
     ]);
     $output = $renderer->renderTemplate('layout', 'Application', [
+        'pageActive' => 'address-book',
         'blockBody' => $outputBody
     ]);
     echo $output;
