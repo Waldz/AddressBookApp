@@ -35,5 +35,27 @@
                 (8, 'Tester', 'Mike Click', 'mike.click@bigbank.ee', 6);
         ]]></sql>
     </changeSet>
+    <changeSet id="user-structure" author="waldz">
+        <sql><![CDATA[
+            CREATE TABLE `auth_user` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `email` varchar(255) NOT NULL,
+              `password_hash` varchar(255) NOT NULL,
+              `status` ENUM('active', 'archived') NOT NULL DEFAULT 'active',
+              `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `updated_at` datetime DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `unique_email` (`email`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Authorized users';
+        ]]></sql>
+        <sql><![CDATA[
+            INSERT INTO `auth_user`
+                (`id`, `email`, `password_hash`, `status`)
+            VALUES
+                (1, 'admin@bigbank.ee', SHA1('admin'), 'active'),
+                (2, 'petrulis.valdas@gmail.com', '6ae03a267deb590186fe2c295cd1018c5296babe', 'active');
+        ]]></sql>
+    </changeSet>
+
 
 </databaseChangeLog>

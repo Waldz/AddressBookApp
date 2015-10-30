@@ -96,7 +96,7 @@ class MysqlDriver implements DatabaseDriver {
             return 'NULL';
         }
 
-        return $this->connection->real_escape_string($value);
+        return "'". $this->connection->real_escape_string($value) ."'";
     }
 
     /**

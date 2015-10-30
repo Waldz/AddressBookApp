@@ -7,6 +7,8 @@ use Application\Db\Driver\MysqlDriver;
 use Application\Model\Config;
 use Application\Service\ServiceManager;
 use Application\View\ViewRenderer;
+use Auth\Service\AuthService;
+use Auth\Service\UserRepository;
 
 // Init autoloader
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -60,6 +62,26 @@ $serviceManager->registerFactoryCallback(
     'view.renderer',
     function () {
         return new ViewRenderer();
+    }
+);
+
+$serviceManager->registerFactoryCallback(
+    'Auth.UserRepository',
+    function (ServiceManager $serviceManager) {
+        /** @var DatabaseDriver $db */
+        $db = $serviceManager->get('database.driver');
+
+        return new UserRepository($db);
+    }
+);
+
+$serviceManager->registerFactoryCallback(
+    'Auth.AuthService',
+    function (ServiceManager $serviceManager) {
+        /** @var UserRepository $userRepository */
+        $userRepository = $serviceManager->get('Auth.UserRepository');
+
+        return new AuthService($userRepository);
     }
 );
 

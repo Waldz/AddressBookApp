@@ -14,7 +14,22 @@ try {
     $authService = $serviceManager->get('Auth.AuthService');
 
     $errors = [];
-
+    if ($_SERVER['REQUEST_METHOD']==='POST') {
+        if (empty($_POST['email'])) {
+            $errors['email'] = 'Email required';
+        }
+        if (empty($_POST['password'])) {
+            $errors['password'] = 'Password required';
+        }
+        if (count($errors)<=0) {
+            if ($authService->authenticate($_POST['email'], $_POST['password'])) {
+                header('Location: /');
+                exit(0);
+            } else {
+                $errors['password'] = 'Authentification failed';
+            }
+        }
+    }
 
     $outputBody = $renderer->renderTemplate('login-form', 'Auth', [
         'inputEmail' => isset($_POST['email']) ? $_POST['email'] : '',
