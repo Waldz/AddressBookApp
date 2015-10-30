@@ -1,0 +1,21 @@
+<?php
+
+/** @var \Application\View\ViewRenderer $this */
+/** @var \AddressBook\Model\Contact[] $contacts */
+$contacts = $data['contacts'];
+
+?>
+<ul class="contact-group">
+    <? foreach($contacts as $contact) { ?>
+    <li class="contact">
+        <i class="contact-title"><?= $contact->getTitle() ?></i>,
+        <span class="contact-name"><?= $contact->getName() ?></span>,
+        <span class="contact-email"><?= $contact->getEmail() ?></span>
+        <? if ($contact->hasSupervisedContacts()) { ?>
+            <?= $this->renderTemplate('contact-list', 'AddressBook', [
+                'contacts' => $contact->getSupervisedContacts(),
+            ]) ?>
+        <? } ?>
+    </li>
+<? } ?>
+</ul>

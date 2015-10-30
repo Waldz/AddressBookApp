@@ -6,6 +6,7 @@ use Application\Db\Driver\DatabaseDriver;
 use Application\Db\Driver\MysqlDriver;
 use Application\Model\Config;
 use Application\Service\ServiceManager;
+use Application\View\ViewRenderer;
 
 // Init autoloader
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -52,6 +53,13 @@ $serviceManager->registerFactoryCallback(
         $db->selectCharset($configDb['db_charset']);
 
         return $db;
+    }
+);
+
+$serviceManager->registerFactoryCallback(
+    'view.renderer',
+    function () {
+        return new ViewRenderer();
     }
 );
 

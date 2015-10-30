@@ -28,11 +28,11 @@
                 (1, 'Project Leader', 'Hans Jørgen Doe', 'hans.jorgen.doe@bigbank.ee', NULL),
                 (2, 'Analyst', 'Mikael Blomkvist', 'mikael.blomkvist@bigbank.ee', 1),
                 (3, 'Project Leader', 'Natālija Izāks Kūks', 'natalija.izaks.kuks@bigbank.ee', NULL),
-                (4, 'Business Analyst', 'Lee Burrows,', 'lee.burrows@bigbank.ee', 3),
+                (4, 'Business Analyst', 'Lee Burrows', 'lee.burrows@bigbank.ee', 3),
                 (5, 'Tester', 'Tobias Fünke', 'tobias.fünke@bigbank.ee', 4),
                 (6, 'Team Coordinator', 'Roland Charts', 'roland.charts@bigbank.ee', 3),
                 (7, 'Developer', 'Igor Mänd', 'igor.mand@bigbank.ee', 6),
-                (8, 'Tester', 'Mike Click', 'mike.click@bigbank.ee', 7);
+                (8, 'Tester', 'Mike Click', 'mike.click@bigbank.ee', 6);
         ]]></sql>
     </changeSet>
 

@@ -1,0 +1,13 @@
+<?php
+
+/** @var \Application\View\ViewRenderer $this */
+
+?>
+<div class="page-header">
+    <h1>Address book</h1>
+</div>
+<div class="contact-tree">
+    <?= $this->renderTemplate('contact-list', 'AddressBook', [
+        'contacts' => $data['contacts'],
+    ]) ?>
+</div>

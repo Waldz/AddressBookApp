@@ -29,6 +29,11 @@ class Contact extends DatabaseModel
     );
 
     /**
+     * @var Contact[]
+     */
+    private $supervisedContacts = [];
+
+    /**
      * Retrieves id.
      *
      * @return int
@@ -121,11 +126,23 @@ class Contact extends DatabaseModel
     }
 
     /**
+     * Check if has supervisor.
+     *
+     * @return bool
+     */
+    public function hasSupervisor()
+    {
+        $supervisorId = $this->getField('supervisor_contact_id');
+
+        return isset($supervisorId);
+    }
+
+    /**
      * Retrieves supervisor_contact_id.
      *
      * @return string
      */
-    public function getSupervisorContactId()
+    public function getSupervisorId()
     {
         return $this->getField('supervisor_contact_id');
     }
@@ -136,9 +153,57 @@ class Contact extends DatabaseModel
      * @param string $supervisorContactId
      * @return Contact
      */
-    public function setSupervisorContactId($supervisorContactId)
+    public function setSupervisorId($supervisorContactId)
     {
         $this->setField('supervisor_contact_id', $supervisorContactId);
+
+        return $this;
+    }
+
+    /**
+     * Check if contact has supervisedContacts.
+     *
+     * @return bool
+     */
+    public function hasSupervisedContacts()
+    {
+        return count($this->supervisedContacts) > 0;
+    }
+
+    /**
+     * Retrieves supervisedContacts.
+     *
+     * @return Contact[]
+     */
+    public function getSupervisedContacts()
+    {
+        return $this->supervisedContacts;
+    }
+
+    /**
+     * Sets supervisedContacts.
+     *
+     * @param Contact[] $supervisedContacts
+     *
+     * @return Contact
+     */
+    public function setSupervisedContacts($supervisedContacts)
+    {
+        $this->supervisedContacts = $supervisedContacts;
+
+        return $this;
+    }
+
+    /**
+     * Add supervised contact.
+     *
+     * @param Contact $supervisedContact
+     *
+     * @return Contact
+     */
+    public function addSupervisedContact($supervisedContact)
+    {
+        $this->supervisedContacts[] = $supervisedContact;
 
         return $this;
     }

@@ -1,15 +1,25 @@
 <?php
 
+use AddressBook\Service\ContactRepository;
 use Application\Application;
+use Application\View\ViewRenderer;
 
 try {
     /** @var Application $application */
     $application = require(__DIR__ . '/../init_application.php');
+    /** @var ViewRenderer $renderer */
+    $renderer = $application->getServiceManager()->get('view.renderer');
+    /** @var ContactRepository $contactRepository */
+    $contactRepository = $application->getServiceManager()->get('AddressBook.ContactRepository');
 
-    /** @var \AddressBook\Service\ContactRepository $repository */
-    $repository = $application->getServiceManager()->get('AddressBook.ContactRepository');
-    var_dump($repository->contactGet(1));
-    var_dump($repository->contactList([1]));
+    $masterContacts = $contactRepository->contactListWithoutSupervisor();
+    $outputBody = $renderer->renderTemplate('contact-tree', 'AddressBook', [
+        'contacts' => $contactRepository->fetchSupervisedPersons($masterContacts)
+    ]);
+    $output = $renderer->renderTemplate('layout', 'Application', [
+        'blockBody' => $outputBody
+    ]);
+    echo $output;
 
 } catch (\Exception $e) {
     // In case of bootstrap error do not show blank screen.
