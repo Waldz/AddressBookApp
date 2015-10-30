@@ -46,3 +46,13 @@ Step2. Add virtual host and restart Web server
     /etc/init.d/nginx reload
 
 Step. Woolia! http://contacts.localhost/
+
+
+Update JS dependencies
+------------
+Step1. Install Bower
+    sudo npm install -g bower
+    sudo npm install -g bower-installer
+
+Step2. If You have Bower
+    bower install

@@ -1,0 +1,41 @@
+{
+  "name": "rabbitize/address-book-application",
+  "description": "Address book with category multiple levels",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Valdas Petrulis",
+      "email": "petrulis.valdas@gmail.com"
+    }
+  ],
+  "main": "public/js/main.js",
+  "dependencies": {
+    "underscore": "~1.8.3",
+    "jquery": "~2.1.4",
+    "backbone": "~1.2.3",
+    "bootstrap": "~3.3.5",
+    "requirejs": "~2.1.20"
+  },
+  "install": {
+    "path": "public/js/vendor",
+    "sources": {
+      "requirejs": [
+        "bower_components/requirejs/*.js",
+        "bower_components/requirejs/*.map"
+      ],
+      "underscore": [
+        "bower_components/underscore/*.js",
+        "bower_components/underscore/*.map"
+      ],
+      "jquery": "bower_components/jquery/dist/**",
+      "backbone": [
+        "bower_components/backbone/*.js",
+        "bower_components/backbone/*.map"
+      ],
+      "bootstrap": [
+        "bower_components/bootstrap/dist/**"
+      ]
+    }
+  }
+}
