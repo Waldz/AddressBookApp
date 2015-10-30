@@ -62,7 +62,11 @@ $serviceManager->registerFactoryCallback(
     'view.renderer',
     function (ServiceManager $serviceManager) {
         $renderer = new ViewRenderer();
-        $renderer->setVariable('currentUser', $serviceManager->get('Auth.CurrentUser'));
+        $renderer->setVariables([
+            'headerStyle'   => '',
+            'headerScript'  => '',
+            'currentUser'   => $serviceManager->get('Auth.CurrentUser'),
+        ]);
 
         return $renderer;
     }

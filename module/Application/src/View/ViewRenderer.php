@@ -12,6 +12,8 @@ namespace Application\View;
  */
 class ViewRenderer {
 
+    const APPEND_DELIMITER = "\n";
+
     /**
      * @var array
      */
@@ -41,6 +43,21 @@ class ViewRenderer {
     }
 
     /**
+     * Retrieves variables.
+     *
+     * @param string $variable
+     * @return mixed
+     */
+    public function getVariable($variable)
+    {
+        if (!isset($this->variables[$variable])) {
+            return null;
+        }
+
+        return $this->variables[$variable];
+    }
+
+    /**
      * Sets variables.
      *
      * @param string $variable
@@ -51,6 +68,21 @@ class ViewRenderer {
     public function setVariable($variable, $value)
     {
         $this->variables[$variable] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Sets variables.
+     *
+     * @param string $variable
+     * @param string $value
+     *
+     * @return ViewRenderer
+     */
+    public function appendVariable($variable, $value)
+    {
+        $this->variables[$variable] .= self::APPEND_DELIMITER . $value;
 
         return $this;
     }
@@ -73,6 +105,27 @@ class ViewRenderer {
         ob_end_clean();
 
         return $templateOutput;
+    }
+
+    /**
+     * Start to capture output
+     */
+    public function captureStart()
+    {
+        ob_start();
+    }
+
+    /**
+     * Return captures output
+     *
+     * @return string
+     */
+    public function captureEnd()
+    {
+        $captureOutput = ob_get_contents();
+        ob_end_clean();
+
+        return $captureOutput;
     }
 
 }
