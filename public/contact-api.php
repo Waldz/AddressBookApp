@@ -4,6 +4,7 @@ use AddressBook\Model\Contact;
 use AddressBook\Transformer\ContactTransformer;
 use AddressBook\Service\ContactRepository;
 use Application\Application;
+use Auth\Service\AuthService;
 
 /**
  * @param ContactRepository $contactRepository
@@ -52,6 +53,12 @@ try {
     $application = require(__DIR__ . '/../init_application.php');
     /** @var ContactRepository $contactRepository */
     $contactRepository = $application->getServiceManager()->get('AddressBook.ContactRepository');
+    /** @var AuthService $authService */
+    $authService = $serviceManager->get('Auth.AuthService');
+
+    if (!$authService->isAuthenticated()) {
+        responseError(403, 'Sorry, no rights to go here');
+    }
 
     $requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
     switch ($requestMethod) {
