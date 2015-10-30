@@ -15,10 +15,17 @@ use Auth\Model\User;
 class AuthService
 {
 
+    const SESSION_USER_ID = 'authenticatedUserId';
+
     /**
      * @var UserRepository
      */
     private $userRepository;
+
+    /**
+     * @var array
+     */
+    private $session;
 
     /**
      * @var User
@@ -27,10 +34,12 @@ class AuthService
 
     /**
      * @param UserRepository $userRepository
+     * @param array $session
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, &$session)
     {
         $this->setUserRepository($userRepository);
+        $this->session = &$session;
     }
 
     /**
@@ -62,7 +71,7 @@ class AuthService
      * @param string $email
      * @param string $password
      *
-     * @return User Return authenticated user of NULL if failed
+     * @return User|null Return authenticated user of NULL if failed
      */
     public function authenticate($email, $password)
     {
@@ -73,42 +82,96 @@ class AuthService
             return null;
         }
 
-        $user = $this->getUserRepository()->userGetByEmail($email, User::STATUS_ACTIVE);
-        if (!$user) {
+        $userCandidate = $this->getUserRepository()->userGetByEmail($email, User::STATUS_ACTIVE);
+        if (!$userCandidate) {
             return null;
         }
 
-        if (!$user->isActive()) {
+        if (!$userCandidate->isActive()) {
             return false;
         }
 
-        if ($user->getPasswordHash()!==$this->calculatePasswordHash($password)) {
+        if ($userCandidate->getPasswordHash()!==$this->calculatePasswordHash($password)) {
             return null;
         }
 
-        $this->authenticatedUser = $user;
+        $this->storeAuthentication($userCandidate);
 
-        return $user;
+        return $userCandidate;
     }
 
     /**
-     * User has loged in
+     * Logouts currently authenticate user
+     */
+    public function unauthenticate()
+    {
+        $this->clearAuthentication();
+    }
+
+    /**
+     * Check if user is logged in
      *
      * @return bool
      */
     public function isAuthenticated()
     {
-        return isset($this->authenticatedUser);
+        $authenticatedUser = $this->getAuthenticatedUser();
+
+        return isset($authenticatedUser);
     }
 
     /**
-     * Retrieves currentUser.
+     * Retrieves currently logged user.
      *
      * @return User
      */
     public function getAuthenticatedUser()
     {
-        return $this->authenticatedUser;
+        if ($this->authenticatedUser) {
+            return $this->authenticatedUser;
+        }
+
+        return $this->authenticateFromSession();
+    }
+
+    /**
+     * @param User $user
+     */
+    protected function storeAuthentication(User $user)
+    {
+        $this->authenticatedUser = $user;
+        $this->session[self::SESSION_USER_ID] = $user->getId();
+    }
+
+    protected function clearAuthentication()
+    {
+        $this->authenticatedUser = null;
+        unset($this->session[self::SESSION_USER_ID]);
+    }
+
+    /**
+     * Tries to check and authenticate by session storage
+     *
+     * @return User|null Return authenticated user of NULL if failed
+     */
+    protected function authenticateFromSession()
+    {
+        if (empty($this->session[self::SESSION_USER_ID])) {
+            return null;
+        }
+
+        $candidateUser = $this->getUserRepository()->userGet($this->session[self::SESSION_USER_ID]);
+        if (!isset($candidateUser)) {
+            return null;
+        }
+
+        if (!$candidateUser->isActive()) {
+            return false;
+        }
+
+        $this->storeAuthentication($candidateUser);
+
+        return $candidateUser;
     }
 
     /**

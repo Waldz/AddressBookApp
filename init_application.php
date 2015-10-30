@@ -60,8 +60,11 @@ $serviceManager->registerFactoryCallback(
 
 $serviceManager->registerFactoryCallback(
     'view.renderer',
-    function () {
-        return new ViewRenderer();
+    function (ServiceManager $serviceManager) {
+        $renderer = new ViewRenderer();
+        $renderer->setVariable('currentUser', $serviceManager->get('Auth.CurrentUser'));
+
+        return $renderer;
     }
 );
 
@@ -81,7 +84,17 @@ $serviceManager->registerFactoryCallback(
         /** @var UserRepository $userRepository */
         $userRepository = $serviceManager->get('Auth.UserRepository');
 
-        return new AuthService($userRepository);
+        return new AuthService($userRepository, $_SESSION);
+    }
+);
+
+$serviceManager->registerFactoryCallback(
+    'Auth.CurrentUser',
+    function (ServiceManager $serviceManager) {
+        /** @var AuthService $authService */
+        $authService = $serviceManager->get('Auth.AuthService');
+
+        return $authService->getAuthenticatedUser();
     }
 );
 

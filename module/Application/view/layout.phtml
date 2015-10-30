@@ -1,3 +1,12 @@
+<?php
+
+use Auth\Model\User;
+
+/** @var User $currentUser */
+$currentUser = $data['currentUser'];
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +29,19 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+            <? if (isset($currentUser)) { ?>
+                <li><a href="/"><?= $currentUser->getEmail() ?></a></li>
+            <? } ?>
+            <? if (!isset($currentUser)) { ?>
                 <li class="<?= $data['pageActive']==='login' ? 'active' : '' ?>">
                     <a href="/login.php"><span class="glyphicon glyphicon-user" ></span> Login</a>
                 </li>
+            <? } ?>
+            <? if (isset($currentUser)) { ?>
+                <li>
+                    <a href="/logout.php"><span class="glyphicon glyphicon-user" ></span> Logout</a>
+                </li>
+            <? } ?>
             </ul>
         </div>
     </nav>

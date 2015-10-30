@@ -60,6 +60,7 @@ class Application
 
         $this->loadApplicationConfig();
         $this->configurePhpEnvironment();
+        $this->configurePhpSession();
 
         $this->debug('System started');
 
@@ -95,6 +96,11 @@ class Application
         } else {
             ini_set('display_errors', false);
         }
+    }
+
+    protected function configurePhpSession()
+    {
+        session_start();
     }
 
     /**
