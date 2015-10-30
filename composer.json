@@ -19,8 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application",
-            "AddressBook\\": "module/AddressBook"
+            "Application\\": "module/Application/src",
+            "AddressBook\\": "module/AddressBook/src"
         }
     },
     "scripts": {
