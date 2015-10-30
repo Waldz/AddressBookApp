@@ -11,23 +11,23 @@ Installation
 
 Deploy application
 ----------------------------
-Step 1. Download and install composer to your computer (read howto at https://getcomposer.org/doc/)
+Step 1. Configure project, database:
+    cp config/autoload/local.php.dist config/autoload/local.php
+    vim config/autoload/local.php
+
+Step 2. Download and install composer to your computer (read howto at https://getcomposer.org/doc/)
     curl -s https://getcomposer.org/installer | php --
     mv composer.phar bin/composer
     chmod +x bin/composer
 
-Step 2. Or manually invoke the shipped `bin/composer`:
+Step 3. Or manually invoke the shipped `bin/composer`:
     # The `self-update` directive is to download newest up-to-date `composer`
     bin/composer self-update
     # This install all application required libraries for first time
     bin/composer install
 
-Step 3. Configure project:
-    cp config/autoload/local.php.dist config/autoload/local.php
-    vim config/autoload/local.php
-
-Step 4. Import DB data
-    data/schema.sql
+Step 4. Import database data
+    bin/migrate
 
 
 Virtual Host

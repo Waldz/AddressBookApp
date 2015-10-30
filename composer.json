@@ -3,7 +3,7 @@
     "description": "Address book with category multiple levels",
     "type": "project",
     "license": "BSD-3-Clause",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Valdas Petrulis",
@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "php": "5.5.*"
+        "php": "5.5.*",
+        "joellarson/liquibase": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
@@ -20,5 +21,13 @@
         "psr-4": {
             "Application\\": "module/Application"
         }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "bin/migrate"
+        ],
+        "post-install-cmd": [
+            "bin/migrate"
+        ]
     }
 }

@@ -4,8 +4,46 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b6bb96d299b87d57a5a5b0cfeb720ec1",
-    "packages": [],
+    "hash": "2842c627c2fb152d0422c91d345e0c6f",
+    "packages": [
+        {
+            "name": "joellarson/liquibase",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JoelLarson/liquibase.git",
+                "reference": "82185f25f24c2bf5e261ec4ecbd3b20c9af142ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JoelLarson/liquibase/zipball/82185f25f24c2bf5e261ec4ecbd3b20c9af142ff",
+                "reference": "82185f25f24c2bf5e261ec4ecbd3b20c9af142ff",
+                "shasum": ""
+            },
+            "bin": [
+                "liquibase"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Joel Larson",
+                    "email": "joellarsonweb@gmail.com"
+                }
+            ],
+            "description": "Composer package to provide Liquibase",
+            "homepage": "https://github.com/JoelLarson/liquibase",
+            "keywords": [
+                "database",
+                "liquibase",
+                "migrations"
+            ],
+            "time": "2014-12-19 17:49:08"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -957,8 +995,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "joellarson/liquibase": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

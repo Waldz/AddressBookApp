@@ -25,11 +25,19 @@ $serviceManager->registerFactoryCallback(
 );
 
 $serviceManager->registerFactoryCallback(
-    'database',
+    'database.config',
     function (ServiceManager $serviceManager) {
         /** @var Config $config */
         $config = $serviceManager->get('config');
-        $configDb = $config['database'];
+        return $config['database'];
+    }
+);
+
+$serviceManager->registerFactoryCallback(
+    'database.driver',
+    function (ServiceManager $serviceManager) {
+        /** @var Config $config */
+        $configDb = $serviceManager->get('database.config');
 
         $db = new MysqlDriver();
         $db->connect(

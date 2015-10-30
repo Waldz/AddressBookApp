@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+
+use Application\Application;
+
+try {
+    /** @var Application $application */
+    $application = require(__DIR__ . '/../init_application.php');
+    $configDb = $application->getServiceManager()->get('database.config');
+
+    $command = sprintf(
+        'vendor/bin/liquibase'
+            .' --classpath=vendor/joellarson/liquibase/lib'
+            .' --driver=com.mysql.jdbc.Driver'
+            .' --url="jdbc:mysql://%s:%d/%s?createDatabaseIfNotExist=true"'
+            .' --username=%s'
+            .' --password=%s'
+            .' --changeLogFile=data/migrations/database-changelog.xml'
+            .' migrate',
+        $configDb['db_host'],
+        $configDb['db_port'],
+        $configDb['db_name'],
+        $configDb['db_user'],
+        $configDb['db_password']
+    );
+    exec($command);
+
+} catch (\Exception $e) {
+    // In case of bootstrap error do not show blank screen.
+    echo $e->getMessage()."\n";
+    echo $e->getTraceAsString();
+}
+
+$application->shutdown();
+echo $application->debugGetOutput();
