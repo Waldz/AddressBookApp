@@ -100,6 +100,16 @@ class MysqlDriver implements DatabaseDriver {
     }
 
     /**
+     * Just execute any query
+     *
+     * @param $query
+     */
+    public function query($query)
+    {
+        $this->doQuery($query);
+    }
+
+    /**
      * Execute the specified query & fetch the first row
      *
      * @param $query
@@ -124,6 +134,22 @@ class MysqlDriver implements DatabaseDriver {
     }
 
     /**
+     * Returns the autoincrement ID
+     *
+     * @param string $table
+     * @param string $field
+     *
+     * @return string
+     */
+    public function lastInsertId($table, $field)
+    {
+        $query = 'SELECT LAST_INSERT_ID()';
+        $row = $this->doQuery($query)->fetch_row();
+
+        return $row[0];
+    }
+
+    /**
      * @param string $query
      *
      * @returns mysqli_result
@@ -138,7 +164,7 @@ class MysqlDriver implements DatabaseDriver {
         $result = $this->connection->query($query);
         if (!$result) {
             throw new DatabaseException(sprintf(
-                'Cant connect to MySQL server (%s: %s)',
+                'MySQL query failed (%s: %s)',
                 $this->connection->errno,
                 $this->connection->error
             ));

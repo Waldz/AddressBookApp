@@ -60,9 +60,16 @@ interface DatabaseDriver {
 	public function quote($value);
 
 	/**
+	 * Just execute any query
+	 *
+	 * @param string $query
+	 */
+	public function query($query);
+
+	/**
 	 * Execute the specified query & fetch the first row
 	 *
-	 * @param $query
+	 * @param string $query
 	 * @return array
 	 */
 	public function queryRow($query);
@@ -70,9 +77,19 @@ interface DatabaseDriver {
 	/**
 	 * Execute the specified query & fetch all the rows
 	 *
-	 * @param $query
+	 * @param string $query
 	 * @return array[]
 	 */
 	public function queryAll($query);
+
+	/**
+	 * Returns the autoincrement ID
+	 *
+	 * @param string $table
+	 * @param string $field
+	 *
+	 * @return string
+	 */
+	public function lastInsertId($table, $field);
 
 }

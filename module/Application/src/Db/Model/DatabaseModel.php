@@ -108,11 +108,21 @@ class DatabaseModel
     }
 
     /**
+     * Retrieves data.
+     *
+     * @return array
+     */
+    public function getFields()
+    {
+        return $this->data;
+    }
+
+    /**
      * Sets the container's parameters from given array.
      *
      * @param array $fieldData
      */
-    public function setFields(array $fieldData)
+    public function updateFields(array $fieldData)
     {
         foreach ($fieldData as $field => $value) {
             $this->setField($field, $value);

@@ -77,6 +77,37 @@ class ContactRepository
     }
 
     /**
+     * Save contact
+     *
+     * @param Contact $contact
+     */
+    public function contactSave(Contact $contact)
+    {
+        if (!empty($contact->getId())) {
+            $this->contactUpdate($contact);
+        } else {
+            $this->contactInsert($contact);
+        }
+    }
+
+    /**
+     * Delete contact
+     *
+     * @param Contact $contact
+     */
+    public function contactDelete(Contact $contact)
+    {
+        $db = $this->getDatabaseDriver();
+
+        $query = "
+            DELETE FROM `contact`
+            WHERE `id` = ". $db->quote($contact->getId()) ."
+            LIMIT 1
+        ";
+        $db->query($query);
+    }
+
+    /**
      * Retrieves contacts by given filters
      *
      * @param array $supervisorIds
@@ -139,7 +170,7 @@ class ContactRepository
             $supervisor = $supervisorsById[$supervisedContact->getSupervisorId()];
             $supervisor->addSupervisedContact($supervisedContact);
         }
-        
+
         foreach ($supervisors as $supervisor) {
             $this->fetchSupervisedPersons($supervisor->getSupervisedContacts());
         }
@@ -154,6 +185,56 @@ class ContactRepository
     private function rowToContact($row)
     {
         return new Contact($row);
+    }
+
+    /**
+     * Insert contact
+     *
+     * @param Contact $contact
+     */
+    protected function contactInsert(Contact $contact)
+    {
+        $db = $this->getDatabaseDriver();
+
+        $parts = array();
+        foreach ($contact->getFields() as $field => $fieldValue) {
+            $parts[] = "`". $field ."` = ". $db->quote($fieldValue);
+        }
+
+        $query = "
+            INSERT INTO `contact`
+            SET
+                `created_at` = NOW(),
+                ". implode($parts, ', ') ."
+        ";
+        $db->query($query);
+
+        $contact->setId($db->lastInsertId('contact', 'id'));
+    }
+
+    /**
+     * Insert contact
+     *
+     * @param Contact $contact
+     */
+    protected function contactUpdate(Contact $contact)
+    {
+        $db = $this->getDatabaseDriver();
+
+        $parts = array();
+        foreach ($contact->getFields() as $field => $fieldValue) {
+            $parts[] = "`". $field ."` = ". $db->quote($fieldValue);
+        }
+
+        $query = "
+            UPDATE `contact`
+            SET
+                `updated_at` = NOW(),
+                ". implode($parts, ', ') ."
+            WHERE `id` = ". $db->quote($contact->getId()) ."
+            LIMIT 1
+        ";
+        $db->query($query);
     }
 
 }
