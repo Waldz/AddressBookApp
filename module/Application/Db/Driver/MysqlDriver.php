@@ -3,20 +3,21 @@
 namespace Application\Db\Driver;
 
 use Application\Db\Exception\DatabaseException;
+use mysqli;
+use mysqli_result;
 
 /**
- * Database helper
+ * Class MysqlDriver
  *
  * @package Application
  * @subpackage Db
  *
  * @author Valdas Petrulis <petrulis.valdas@gmail.com>
  */
-class MysqlDriver
-{
+class MysqlDriver implements DatabaseDriver {
 
     /**
-     * @var \mysqli
+     * @var mysqli
      */
     private $connection;
 
@@ -26,17 +27,13 @@ class MysqlDriver
     }
 
     /**
-     * @param string $username
-     * @param string $password
-     * @param string $host
-     * @param int $port [$port]
-     *
-     * @return $this
-     * @throws DatabaseException
+     * {@inheritdoc}
      */
-    public function connect($username, $password, $host, $port = 3306)
+    public function connect($username, $password, $host, $port = null)
     {
-        $mysqli = new \mysqli($host, $username, $password, '', $port);
+        $port = $port ?: 3306;
+
+        $mysqli = new mysqli($host, $username, $password, '', $port);
         if ($mysqli->connect_error) {
             throw new DatabaseException(sprintf(
                 'Cant connect to MySQL server (%s: %s)',
@@ -49,38 +46,7 @@ class MysqlDriver
     }
 
     /**
-     * @param string $database
-     *
-     * @return $this
-     * @throws DatabaseException
-     */
-    public function selectDatabase($database)
-    {
-        $result = $this->connection->select_db($database);
-        if (!$result) {
-            throw new DatabaseException('Failed to select MySQL database: '.$database);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $charset
-     *
-     * @return $this
-     * @throws DatabaseException
-     */
-    public function selectCharset($charset)
-    {
-        $query = "SET NAMES '". $charset ."'";
-        $this->doQuery($query);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws DatabaseException
+     * {@inheritdoc}
      */
     public function disconnect()
     {
@@ -95,9 +61,72 @@ class MysqlDriver
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function selectDatabase($database)
+    {
+        $result = $this->connection->select_db($database);
+        if (!$result) {
+            throw new DatabaseException('Failed to select MySQL database: '.$database);
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function selectCharset($charset)
+    {
+        $query = "SET NAMES '". $charset ."'";
+        $this->doQuery($query);
+
+        return $this;
+    }
+
+    /**
+     * Convert a text value into a database specific format that is suitable to
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public function quote($value)
+    {
+        if (is_null($value)) {
+            return 'NULL';
+        }
+
+        return $this->connection->real_escape_string($value);
+    }
+
+    /**
+     * Execute the specified query & fetch the first row
+     *
+     * @param $query
+     * @return array
+     */
+    public function queryRow($query)
+    {
+        $result = $this->doQuery($query);
+        return $result->fetch_array(MYSQLI_ASSOC);
+    }
+
+    /**
+     * Execute the specified query & fetch all the rows
+     *
+     * @param $query
+     * @return array[]
+     */
+    public function queryAll($query)
+    {
+        $result = $this->doQuery($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /**
      * @param string $query
      *
-     * @returns resource Result
+     * @returns mysqli_result
      * @throws DatabaseException
      */
     public function doQuery($query)
@@ -114,6 +143,8 @@ class MysqlDriver
                 $this->connection->error
             ));
         }
+
+        return $result;
     }
 
 }

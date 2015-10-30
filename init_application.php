@@ -1,6 +1,8 @@
 <?php
 
+use AddressBook\Service\ContactRepository;
 use Application\Application;
+use Application\Db\Driver\DatabaseDriver;
 use Application\Db\Driver\MysqlDriver;
 use Application\Model\Config;
 use Application\Service\ServiceManager;
@@ -50,6 +52,16 @@ $serviceManager->registerFactoryCallback(
         $db->selectCharset($configDb['db_charset']);
 
         return $db;
+    }
+);
+
+$serviceManager->registerFactoryCallback(
+    'AddressBook.ContactRepository',
+    function (ServiceManager $serviceManager) {
+        /** @var DatabaseDriver $db */
+        $db = $serviceManager->get('database.driver');
+
+        return new ContactRepository($db);
     }
 );
 
