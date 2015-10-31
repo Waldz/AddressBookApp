@@ -4,14 +4,16 @@ define([
     'dialog/views/modalDialogView',
     'button/views/buttonsView',
     'addressBook/views/contactFormView',
-    'addressBook/models/contactModel'
+    'addressBook/models/contactModel',
+    'text!addressBook/templates/contactListItemTemplate.jst'
 ],
 function (
     Backbone,
     ModalDialogView,
     ButtonsView,
     ContactFormView,
-    ContactModel
+    ContactModel,
+    ContactListItemTemplate
 ) {
     'use strict';
 
@@ -38,9 +40,7 @@ function (
          * @param {int} supervisorId
          */
         showContactCreateForm: function (supervisorId) {
-            var contact = new ContactModel({
-                    supervisor_id: supervisorId
-                }),
+            var contact = new ContactModel(),
                 contactView = new ContactFormView({
                     model: contact
                 }),
@@ -54,9 +54,10 @@ function (
             buttonsView.addButton('save', 'btn-primary', 'Save', function () {
                 if (contactView.isValid()) {
                     var promise = contact.save().done(function () {
-                        contactView.displayMessage('Contact created');
+                        contactView.displayMessage('Contact created', 'success');
                         dialogView.close();
-                    });
+                        this.renderContact(contact);
+                    }.bind(this));
 
                     // Freeze UI
                     contactView.disable();
@@ -72,9 +73,9 @@ function (
                     // Handle fatal errors
                     contactView.clearMessage();
                     promise.fail(function (response) {
-                        var errorMessage = response.responseJSON.message || 'Failed to save contact';
-                        contactView.displayMessage(errorMessage);
-                    });
+                        var errorMessage = this.getFailureTextFromJson(response) || 'Failed to create contact';
+                        contactView.displayMessage(errorMessage, 'danger');
+                    }.bind(this));
 
                     // Handle validation errors
                     contactView.clearErrors();
@@ -83,9 +84,9 @@ function (
                             var validationErrors = response.responseJSON;
                             contactView.displayFieldErrors(validationErrors);
                         }
-                    });
+                    }.bind(this));
                 }
-            });
+            }.bind(this));
 
             dialogView
                 .setTitle('Add supervised person')
@@ -93,6 +94,68 @@ function (
                 .setFooterView(buttonsView)
                 .render()
                 .show();
+        },
+
+        /**
+         * Get error text for JSON response which is known to be bad.
+         *
+         * @param {Object} response
+         * @param {string} [noJsonMessage]
+         *
+         * @returns {string}
+         */
+        getFailureTextFromJson: function (response, noJsonMessage) {
+            // JSON response marked as failed, because contains no JSON
+            if (response.status === 200) {
+                return noJsonMessage || 'Server returned unexpected response, please verify system installation.';
+            }
+
+            // Otherwise JSON response bring error message
+            if (!_.isUndefined(response.responseJSON)) {
+                if (!_.isUndefined(response.responseJSON.message)) {
+                    return response.responseJSON.message;
+                }
+            }
+
+            return null;
+        },
+
+        /**
+         * @param {int} contactId
+         * @return jQuery
+         *
+         * @private
+         */
+        findContactElement: function(contactId) {
+            return this.$('.contact[data-contact-id='+ contactId +']');
+        },
+
+        /**
+         * @param {ContactModel} contact
+         */
+        renderContact: function (contact) {
+            var template = _.template(ContactListItemTemplate),
+                $supervisorContacts,
+                $contact;
+
+            if (contact.hasSupervisor()) {
+                $supervisorContacts = this.findContactElement(contact.getSupervisor().get('id')).find('.contact-group');
+            } else {
+                $supervisorContacts = this.$('.contact-group-root')
+            }
+
+            $supervisorContacts.append(template({
+                contact: contact
+            }));
+
+            // Blink changed item
+            $contact = this.findContactElement(contact.id);
+            $contact
+                .addClass('bg-success')
+                .css('opacity', 0.5)
+                .fadeTo(1500, 1, function whenComplete() {
+                    $contact.removeClass('bg-success');
+                });
         },
 
         /**

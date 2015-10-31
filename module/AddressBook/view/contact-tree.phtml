@@ -7,9 +7,11 @@
     <h1>Address book</h1>
 </div>
 <div class="contact-tree">
-    <?= $this->renderTemplate('contact-list', 'AddressBook', [
-        'contacts' => $data['contacts'],
-    ]) ?>
+    <ul class="contact-group contact-group-root">
+        <?= $this->renderTemplate('contact-list', 'AddressBook', [
+            'contacts' => $data['contacts'],
+        ]) ?>
+    </ul>
 </div>
 
 <? $this->captureStart() ?>

@@ -1,0 +1,15 @@
+<li class="contact" data-contact-id="<%= contact.get('id') %>">
+    <div class="contact-info">
+        <i class="contact-title"><%= contact.get('title') %></i>,
+        <span class="contact-name"><%= contact.get('name') %></span>,
+        <span class="contact-email"><%= contact.get('email') %></span>
+        <a href="#" class="contact-new" data-contact-id="<%= contact.get('id') %>" title="Add supervised person">
+            <i class="glyphicon glyphicon-plus"></i>
+        </a>
+        <a href="#" class="contact-delete" data-contact-id="<%= contact.get('id') %>" title="Delete this contact">
+            <i class="glyphicon glyphicon-trash"></i>
+        </a>
+    </div>
+
+    <ul class="contact-group"></ul>
+</li>

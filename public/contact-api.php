@@ -3,6 +3,7 @@
 use AddressBook\Model\Contact;
 use AddressBook\Transformer\ContactTransformer;
 use AddressBook\Service\ContactRepository;
+use AddressBook\Validator\ContactValidator;
 use Application\Application;
 use Auth\Service\AuthService;
 
@@ -31,7 +32,7 @@ function requestParseJson() {
     $requestBody = file_get_contents('php://input');
     $requestJson = json_decode($requestBody, true);
     if (json_last_error()) {
-        responseError(400, 'Invalid JSON given: '.json_last_error());
+        responseError(422, 'Invalid JSON given: '.json_last_error());
     }
 
     return $requestJson;
@@ -39,14 +40,18 @@ function requestParseJson() {
 
 function responseError($statusCode, $errorMessage) {
     http_response_code($statusCode);
-    responseJson([
+    header('Content-Type: application/json');
+
+    echo json_encode([
         'message' => $errorMessage,
     ]);
     exit(0);
 }
 
-function responseJson($jsonData) {
+function responseJson($statusCode, $jsonData) {
+    http_response_code($statusCode);
     header('Content-Type: application/json');
+
     echo json_encode($jsonData);
     exit(0);
 }
@@ -68,41 +73,52 @@ try {
         case 'post':
             $contact = new Contact();
             $contact = ContactTransformer::fromRequest(requestParseJson(), $contact);
+
+            $errors = ContactValidator::validate($contact);
+            if (count($errors)>0) {
+                responseJson(400, $errors);
+            }
+
             $contactRepository->contactSave($contact);
             $contactRepository->fetchSupervisors([$contact]);
 
-            responseJson(ContactTransformer::toTransient($contact));
+            responseJson(200, ContactTransformer::toTransient($contact));
             break;
 
         case 'put':
             $contact = fetchContact($contactRepository);
             $contact = ContactTransformer::fromRequest(requestParseJson(), $contact);
+
+            $errors = ContactValidator::validate($contact);
+            if (count($errors)>0) {
+                responseJson(400, $errors);
+            }
+
             $contactRepository->contactSave($contact);
             $contactRepository->fetchSupervisors([$contact]);
 
-            responseJson(ContactTransformer::toTransient($contact));
+            responseJson(200, ContactTransformer::toTransient($contact));
             break;
 
         case 'delete':
             $contact = fetchContact($contactRepository);
             $contactRepository->contactDelete($contact);
 
-            responseJson([]);
+            responseJson(200, []);
             break;
 
         case 'get':
         default:
             $contact = fetchContact($contactRepository);
 
-            responseJson(ContactTransformer::toTransient($contact));
+            responseJson(200, ContactTransformer::toTransient($contact));
             break;
     }
 
 
 } catch (\Exception $e) {
     // In case of bootstrap error do not show blank screen.
-    http_response_code(500);
-    responseJson([
+    responseJson(500, [
         'message' => $e->getMessage(),
         'trace' => $e->getTraceAsString(),
     ]);

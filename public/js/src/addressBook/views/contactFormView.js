@@ -65,11 +65,18 @@ function (
         },
 
         clearMessage: function () {
-            this.$('#messagePlaceholder').html('');
+            this.$('#messagePlaceholder')
+                .addClass('hide')
+                .html('');
         },
 
-        displayMessage: function (message) {
-            this.$('#messagePlaceholder').html(message);
+        displayMessage: function (message, level) {
+            var level = level || 'info';
+
+            this.$('#messagePlaceholder')
+                .removeClass()
+                .addClass('alert alert-' + level)
+                .html(message);
         },
 
         clearErrors: function () {
