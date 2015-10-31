@@ -3,7 +3,7 @@
 return [
 
     // Should print debug output
-    'debug' => true,
+    'debug' => false,
     // IPs, which sees printed debug output
     'debug_ips' => [
         // localhost

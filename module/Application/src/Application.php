@@ -181,7 +181,7 @@ class Application
      * @param mixed $message Message or variable
      */
     public function debug($message) {
-        if (!$this->debugIsOn()) {
+        if (!$this->debugOutputIsOn()) {
             return;
         }
 
@@ -207,9 +207,33 @@ class Application
      * @return boolean Is debuging on
      */
     public function debugIsOn() {
-        return $this->config('debug')
-            && isset($_SERVER['REMOTE_ADDR'])
-            && in_array($_SERVER['REMOTE_ADDR'], $this->config('debug_ips'));
+        if (!$this->config('debug')) {
+            return false;
+        }
+
+        if (php_sapi_name()=='cli') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if debug output printing should be turned on
+     *
+     * @return boolean Is debuging on
+     */
+    public function debugOutputIsOn() {
+        if (!$this->config('debug')) {
+            return false;
+        }
+
+        if (php_sapi_name()=='cli') {
+            return false;
+        }
+
+        return isset($_SERVER['REMOTE_ADDR'])
+               && in_array($_SERVER['REMOTE_ADDR'], $this->config('debug_ips'));
     }
 
     /**
