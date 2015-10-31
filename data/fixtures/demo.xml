@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="fixture-bigbank-contacts" author="waldz">
+        <sql><![CDATA[
+            INSERT INTO `contact`
+                (`id`, `title`, `name`, `email`, `supervisor_contact_id`)
+            VALUES
+                (1, 'Project Leader', 'Hans Jørgen Doe', 'hans.jorgen.doe@bigbank.ee', NULL),
+                (2, 'Analyst', 'Mikael Blomkvist', 'mikael.blomkvist@bigbank.ee', 1),
+                (3, 'Project Leader', 'Natālija Izāks Kūks', 'natalija.izaks.kuks@bigbank.ee', NULL),
+                (4, 'Business Analyst', 'Lee Burrows', 'lee.burrows@bigbank.ee', 3),
+                (5, 'Tester', 'Tobias Fünke', 'tobias.fünke@bigbank.ee', 4),
+                (6, 'Team Coordinator', 'Roland Charts', 'roland.charts@bigbank.ee', 3),
+                (7, 'Developer', 'Igor Mänd', 'igor.mand@bigbank.ee', 6),
+                (8, 'Tester', 'Mike Click', 'mike.click@bigbank.ee', 6);
+        ]]></sql>
+    </changeSet>
+    <changeSet id="fixture-bigbank-users" author="waldz">
+        <sql><![CDATA[
+            INSERT INTO `auth_user`
+                (`email`, `password_hash`, `status`)
+            VALUES
+                ('admin@bigbank.ee', SHA1('admin'), 'active');
+        ]]></sql>
+    </changeSet>
+</databaseChangeLog>

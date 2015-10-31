@@ -26,10 +26,12 @@
     },
     "scripts": {
         "post-update-cmd": [
-            "bin/migrate"
+            "bin/migrate",
+            "bin/fixtures demo"
         ],
         "post-install-cmd": [
-            "bin/migrate"
+            "bin/migrate",
+            "bin/fixtures demo"
         ]
     }
 }

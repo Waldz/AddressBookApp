@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+
+use Application\Application;
+use Application\Cli\Exec;
+use Application\Db\Driver\DatabaseDriver;
+
+try {
+    /** @var Application $application */
+    $application = require(__DIR__ . '/../init_application.php');
+    $serviceManager = $application->getServiceManager();
+    $configDb = $serviceManager->get('database.config');
+    /** @var DatabaseDriver $db */
+    $db = $serviceManager->get('database.driver');
+
+    echo 'Dropping database...';
+    $db->query(sprintf('DROP DATABASE `%s`', $configDb['db_name']));
+    echo "done\n";
+
+    echo 'Creating database...';
+    $db->query(sprintf('CREATE DATABASE `%s`', $configDb['db_name']));
+    $db->query(sprintf('USE `%s`', $configDb['db_name']));
+    echo "done\n";
+
+    // Alter DB scema
+    Exec::execWithOutput('bin/migrate');
+
+} catch (\Exception $e) {
+    // In case of bootstrap error do not show blank screen.
+    echo $e->getMessage()."\n";
+    echo $e->getTraceAsString();
+}
+
+$application->shutdown();
+echo $application->debugGetOutput();
