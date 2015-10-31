@@ -89,6 +89,21 @@ function (bs, _, Backbone, Template) {
 
         /**
          * For example:
+         *   dialog.setBodyText('Hello');
+         *
+         * @param fn Callback function.
+         * @returns {*}
+         */
+        setBodyText: function (html) {
+            this.setBodyCallback(function drawBody($body) {
+                $body.html(html);
+            });
+
+            return this;
+        },
+
+        /**
+         * For example:
          *   dialog.setBodyView(new Backbone.View());
          *
          * @param {Backbone.View} view Dialog main view
@@ -131,6 +146,21 @@ function (bs, _, Backbone, Template) {
             });
             this.addClosedCallback(function () {
                 view.remove()
+            });
+
+            return this;
+        },
+
+        /**
+         * For example:
+         *   dialog.setFooterText('Hello');
+         *
+         * @param fn Callback function.
+         * @returns {*}
+         */
+        setFooterText: function (html) {
+            this.setFooterCallback(function drawBody($body) {
+                $body.html(html);
             });
 
             return this;
