@@ -17,6 +17,9 @@ function fetchContact($contactRepository)
     }
 
     $contact = $contactRepository->contactGet($_GET['id']);
+    $contactRepository->fetchSupervisors([$contact]);
+    $contactRepository->fetchSupervisedPersons([$contact]);
+
     if (!isset($contact)) {
         responseError(404, 'No such contact id: '.$_GET['id']);
     }
@@ -66,6 +69,7 @@ try {
             $contact = new Contact();
             $contact = ContactTransformer::fromRequest(requestParseJson(), $contact);
             $contactRepository->contactSave($contact);
+            $contactRepository->fetchSupervisors([$contact]);
 
             responseJson(ContactTransformer::toTransient($contact));
             break;
@@ -74,6 +78,7 @@ try {
             $contact = fetchContact($contactRepository);
             $contact = ContactTransformer::fromRequest(requestParseJson(), $contact);
             $contactRepository->contactSave($contact);
+            $contactRepository->fetchSupervisors([$contact]);
 
             responseJson(ContactTransformer::toTransient($contact));
             break;

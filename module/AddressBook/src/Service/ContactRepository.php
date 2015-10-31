@@ -135,6 +135,29 @@ class ContactRepository
     }
 
     /**
+     * Retrieves contacts by given $ids
+     *
+     * @param array $ids
+     * @return Contact[]
+     */
+    public function contactListByIds(array $ids)
+    {
+        $db = $this->getDatabaseDriver();
+
+        $ids[] = -1;
+        $ids = array_map(array($db, 'quote'), $ids);
+
+        $query = "
+            SELECT *
+            FROM `contact`
+            WHERE `id` IN (". implode(', ', $ids) .")
+        ";
+        $rows = $this->getDatabaseDriver()->queryAll($query);
+
+        return array_map([$this, 'rowToContact'], $rows);
+    }
+
+    /**
      * @return Contact[]
      */
     public function contactListWithoutSupervisor()
@@ -147,6 +170,34 @@ class ContactRepository
         $rows = $this->getDatabaseDriver()->queryAll($query);
 
         return array_map([$this, 'rowToContact'], $rows);
+    }
+
+    /**
+     * Fetch and append supervised people too each given contact
+     *
+     * @param Contact[] $contacts
+     * @return Contact[]
+     */
+    public function fetchSupervisors($contacts)
+    {
+        $supervisorIds = [];
+        foreach ($contacts as $contact) {
+            $supervisorIds[] = $contact->getSupervisorId();
+        }
+
+        $supervisors = $this->contactListByIds($supervisorIds);
+        $supervisorsById = [];
+        foreach ($supervisors as $supervisor) {
+            $supervisorsById[$supervisor->getId()] = $supervisor;
+        }
+
+        foreach ($contacts as $contact) {
+            if (isset($supervisorsById[$contact->getSupervisorId()])) {
+                $contact->setSupervisor($supervisorsById[$contact->getSupervisorId()]);
+            }
+        }
+
+        return $contacts;
     }
 
     /**

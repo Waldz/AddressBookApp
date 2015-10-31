@@ -29,6 +29,11 @@ class Contact extends DatabaseModel
     );
 
     /**
+     * @var Contact
+     */
+    private $supervisor = null;
+
+    /**
      * @var Contact[]
      */
     private $supervisedContacts = [];
@@ -156,6 +161,37 @@ class Contact extends DatabaseModel
     public function setSupervisorId($supervisorContactId)
     {
         $this->setField('supervisor_contact_id', $supervisorContactId);
+
+        return $this;
+    }
+
+    /**
+     * Retrieves supervisor.
+     *
+     * @return Contact
+     */
+    public function getSupervisor()
+    {
+        if (isset($this->supervisor) && $this->getSupervisorId() != $this->supervisor->getId()) {
+            return null;
+        }
+
+        return $this->supervisor;
+    }
+
+    /**
+     * Sets supervisor.
+     *
+     * @param Contact $supervisor
+     * @return Contact
+     */
+    public function setSupervisor($supervisor)
+    {
+        $this->supervisor = $supervisor;
+        $this->setField(
+            'supervisor_contact_id',
+            isset($supervisor) ? $supervisor->getId() : null
+        );
 
         return $this;
     }

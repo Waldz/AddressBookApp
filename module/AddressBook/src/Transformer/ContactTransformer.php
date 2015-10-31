@@ -23,13 +23,32 @@ class ContactTransformer
      */
     public static function toTransient(Contact $contact)
     {
+        $supervisor = $contact->getSupervisor();
+
         return [
             'id' => $contact->getId(),
             'title' => $contact->getTitle(),
             'name' => $contact->getName(),
             'email' => $contact->getEmail(),
-            'supervisor_id' => $contact->getSupervisorId()
+            'supervisor' => $supervisor ? self::toTransient($supervisor) : null,
+            'supervised_contacts' => self::listToTransient($contact->getSupervisedContacts())
         ];
+    }
+
+    /**
+     * Transform contact list to transient data
+     *
+     * @param Contact[] $contacts
+     * @returns array
+     */
+    public static function listToTransient($contacts)
+    {
+        return array_map(
+            function (Contact $contact) {
+                return self::toTransient($contact);
+            },
+            $contacts
+        );
     }
 
     /**
@@ -42,15 +61,21 @@ class ContactTransformer
      */
     public static function fromRequest(array $requestData, $contact)
     {
-        $getOrNull = function ($param) use($requestData) {
+        $contactGetOrNull = function ($param) use($requestData) {
             return isset($requestData[$param]) ? $requestData[$param] : null;
         };
-
         $contact
-            ->setTitle($getOrNull('title'))
-            ->setName($getOrNull('name'))
-            ->setEmail($getOrNull('email'))
-            ->setSupervisorId($getOrNull('supervisor_id'));
+            ->setTitle($contactGetOrNull('title'))
+            ->setName($contactGetOrNull('name'))
+            ->setEmail($contactGetOrNull('email'));
+
+
+        $supervisorId = null;
+        $supervisorJson = $contactGetOrNull('supervisor');
+        if (is_array($supervisorJson) && isset($supervisorJson['id'])) {
+            $supervisorId = $supervisorJson['id'];
+        }
+        $contact->setSupervisorId($supervisorId);
 
         return $contact;
     }
