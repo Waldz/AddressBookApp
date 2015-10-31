@@ -42,7 +42,8 @@ function (
         showContactCreateForm: function (supervisorId) {
             var contact = new ContactModel(),
                 contactView = new ContactFormView({
-                    model: contact
+                    model: contact,
+                    supervisorId: supervisorId
                 }),
                 buttonsView = new ButtonsView(),
                 dialogView = new ModalDialogView();

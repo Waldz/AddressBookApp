@@ -28,11 +28,14 @@ function (
 
     return Backbone.View.extend({
 
-        bindings: {
+        modelBindings: {
             '#title': defaultObserver('title'),
             '#name': defaultObserver('name'),
-            '#email': defaultObserver('email'),
-            '#supervisorName': defaultObserver('supervisorName')
+            '#email': defaultObserver('email')
+        },
+
+        supervisorBindings: {
+            '#supervisorName': defaultObserver('name')
         },
 
         errorBindings: {
@@ -50,6 +53,39 @@ function (
             Backbone.View.prototype.initialize.apply(this, arguments);
 
             this.model = args.model || new ContactModel();
+            this.supervisorModel = new ContactModel({
+                id: args.supervisorId
+            });
+
+            this.syncSupervisorToModel();
+        },
+
+        /**
+         * Sync supervisor model data contact model
+         */
+        syncSupervisorToModel: function () {
+            this.model.setSupervisor(this.supervisorModel);
+
+            this.listenTo(this.supervisorModel, 'change', function () {
+                this.model.setSupervisor(this.supervisorModel);
+            }.bind(this));
+        },
+
+        /**
+         * Fetch assigned supervisor structure to contact
+         */
+        fetchSupervisor: function () {
+            var promise = this.supervisorModel.fetch();
+
+            promise.done(function () {
+                this.model.setSupervisor(this.supervisorModel);
+            }.bind(this));
+
+            // Freeze UI
+            this.disable();
+            promise.always(function () {
+                this.enable();
+            }.bind(this));
         },
 
         /**
@@ -61,7 +97,11 @@ function (
             this.$el.html(template({
                 model: this.model
             }));
-            this.stickit();
+
+            this.stickit(this.model, this.modelBindings);
+            this.stickit(this.supervisorModel, this.supervisorBindings);
+
+            this.fetchSupervisor();
         },
 
         clearMessage: function () {

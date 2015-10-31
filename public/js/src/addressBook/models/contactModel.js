@@ -27,7 +27,6 @@ define(
                 return 'contact-api.php?id=' + this.get('id')
             },
 
-
             /**
              * @returns {boolean}
              */
@@ -44,6 +43,16 @@ define(
                 if (this.hasSupervisor()) {
                     return new ContactModel(this.get('supervisor'));
                 }
+
+                return null;
+            },
+
+            /**
+             * @param {ContactModel} supervisor
+             * @returns {ContactModel}
+             */
+            setSupervisor: function (supervisor) {
+                this.set('supervisor', supervisor ? supervisor.toJSON() : null);
 
                 return null;
             },
