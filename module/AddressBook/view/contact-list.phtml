@@ -14,7 +14,7 @@ $contacts = $data['contacts'];
         <span class="contact-name"><?= $contact->getName() ?></span>,
         <span class="contact-email"><?= $contact->getEmail() ?></span>
         <? if (isset($currentUser)) { ?>
-            <a href="#" class="contact-new" data-contact-id="<?= $contact->getId() ?>" title="Create supervised person">
+            <a href="#" class="contact-new" data-contact-id="<?= $contact->getId() ?>" title="Add supervised person">
                 <i class="glyphicon glyphicon-plus"></i>
             </a>
             <a href="#" class="contact-delete" data-contact-id="<?= $contact->getId() ?>" title="Delete this contact">

@@ -16,7 +16,9 @@
     "backbone": "~1.2.3",
     "bootstrap": "~3.3.5",
     "requirejs": "~2.1.20",
-    "text": "requirejs/text#~2.0.14"
+    "text": "requirejs/text#~2.0.14",
+    "backbone.stickit": "~0.9.2",
+    "underscore.string": "~3.2.2"
   },
   "install": {
     "path": "public/js/vendor",
@@ -29,10 +31,15 @@
         "bower_components/underscore/*.js",
         "bower_components/underscore/*.map"
       ],
+      "underscore.string": "bower_components/underscore.string/dist/**",
       "jquery": "bower_components/jquery/dist/**",
       "backbone": [
         "bower_components/backbone/*.js",
         "bower_components/backbone/*.map"
+      ],
+      "backbone.stickit": [
+        "bower_components/backbone.stickit/*.js",
+        "bower_components/backbone.stickit/*.map"
       ],
       "bootstrap": [
         "bower_components/bootstrap/dist/**"
