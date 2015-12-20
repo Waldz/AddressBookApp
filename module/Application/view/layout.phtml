@@ -1,0 +1,67 @@
+<?php
+
+/** @var \Application\View\ViewRenderer $this */
+/** @var \Auth\Model\User $currentUser */
+$currentUser = $data['currentUser'];
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Address Book</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/js/vendor/bootstrap/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/js/vendor/bootstrap/css/bootstrap-theme.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <?= $data['headerStyle'] ?>
+
+    <script src="/js/vendor/requirejs/require.js"></script>
+    <script src="/js/src/require.config.js"></script>
+    <?= $data['headerScript'] ?>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav navbar-left">
+                <li class="<?= $data['pageActive']==='address-book' ? 'active' : '' ?>">
+                    <a href="/"><span class="glyphicon glyphicon-book" ></span> Address book</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            <? if (isset($currentUser)) { ?>
+                <li><a href="/"><?= $currentUser->getEmail() ?></a></li>
+            <? } ?>
+            <? if (!isset($currentUser)) { ?>
+                <li class="<?= $data['pageActive']==='login' ? 'active' : '' ?>">
+                    <a href="/login.php"><span class="glyphicon glyphicon-user" ></span> Login</a>
+                </li>
+            <? } ?>
+            <? if (isset($currentUser)) { ?>
+                <li>
+                    <a href="/logout.php"><span class="glyphicon glyphicon-user" ></span> Logout</a>
+                </li>
+            <? } ?>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <?= $data['blockBody'] ?>
+    </div>
+
+    <footer class="footer">
+        <hr>
+        <div class="container">
+            <p class="text-muted credit">
+                <small>With <span class="text-danger">&hearts;</span> from </small>
+                <a href="https://github.com/Waldz" title="Waldz">Waldz</a>
+                <small>&copy; 2015</small>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?php
+
+/** @var \Application\View\ViewRenderer $this */
+
+?>
+<div class="page-header">
+    <h1>Address book</h1>
+</div>
+<div class="contact-tree">
+    <ul class="contact-group contact-group-root">
+        <?= $this->renderTemplate('contact-list', 'AddressBook', [
+            'contacts' => $data['contacts'],
+        ]) ?>
+    </ul>
+</div>
+
+<? $this->captureStart() ?>
+<script type="text/javascript">
+    require(
+        ['jquery', 'addressBook/views/contactTreeView'],
+        function ($, ContactTreeView) {
+            $('.contact-tree').each(function () {
+                var view = new ContactTreeView();
+                view.setElement($(this)).render();
+            });
+        }
+    );
+</script>
+<? $this->appendVariable('headerScript', $this->captureEnd()) ?>

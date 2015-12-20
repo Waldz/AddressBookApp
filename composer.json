@@ -1,0 +1,37 @@
+{
+    "name": "rabbitize/address-book-application",
+    "description": "Address book with category multiple levels",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Valdas Petrulis",
+            "email": "petrulis.valdas@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "5.5.*",
+        "joellarson/liquibase": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Application\\": "module/Application/src",
+            "AddressBook\\": "module/AddressBook/src",
+            "Auth\\": "module/Auth/src"
+        }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "bin/migrate",
+            "bin/fixtures demo"
+        ],
+        "post-install-cmd": [
+            "bin/migrate",
+            "bin/fixtures demo"
+        ]
+    }
+}

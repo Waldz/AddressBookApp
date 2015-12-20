@@ -1,0 +1,9 @@
+<div class="buttons-list">
+    <% _.map(buttons, function(button) { %>
+    <button id="<%- button.id %>"
+            type="button"
+            class="button-item btn <%= (button.enabled && !allDisabled) ? '' : 'disabled ' %><%= button.visible ? '' : 'hidden ' %><%- button.cssClass %>"
+            <%= (button.titleAttribute) ? ' title="' + button.titleAttribute + '"' : ''%>
+    ><%- button.title %></button>
+    <% }); %>
+</div>

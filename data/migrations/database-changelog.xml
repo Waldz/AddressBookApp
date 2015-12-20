@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="contact-structure" author="waldz">
+        <sql><![CDATA[
+            CREATE TABLE `contact` (
+                `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `title` varchar(255) NOT NULL,
+                `name` varchar(255) NOT NULL,
+                `email` varchar(255) NOT NULL,
+                `supervisor_contact_id` int(10) unsigned DEFAULT NULL,
+                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` datetime DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                KEY `supervisor_contact_id` (`supervisor_contact_id`),
+                CONSTRAINT `fk_contact__supervisor_contact_id` FOREIGN KEY (`supervisor_contact_id`) REFERENCES `contact`(`id`) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Address book records';
+        ]]></sql>
+    </changeSet>
+    <changeSet id="user-structure" author="waldz">
+        <sql><![CDATA[
+            CREATE TABLE `auth_user` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `email` varchar(255) NOT NULL,
+              `password_hash` varchar(255) NOT NULL,
+              `status` ENUM('active', 'archived') NOT NULL DEFAULT 'active',
+              `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `updated_at` datetime DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `unique_email` (`email`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Authorized users';
+        ]]></sql>
+        <sql><![CDATA[
+            INSERT INTO `auth_user`
+                (`id`, `email`, `password_hash`, `status`)
+            VALUES
+                (1, 'petrulis.valdas@gmail.com', '6ae03a267deb590186fe2c295cd1018c5296babe', 'active');
+        ]]></sql>
+    </changeSet>
+</databaseChangeLog>

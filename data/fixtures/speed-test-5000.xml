@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="fixture-many-contacts" author="waldz">
+        <sql><![CDATA[
+            INSERT INTO `contact` (`title`, `name`, `email`, `supervisor_contact_id`)
+                SELECT
+                    (SELECT title FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT name FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT email FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT supervisor_contact_id FROM contact ORDER BY RAND() LIMIT 1)
+                FROM
+                    contact C1
+                    LEFT JOIN contact C2 ON C1.id<>C2.id
+                    LEFT JOIN contact C3 ON C1.id<>C3.id
+                    LEFT JOIN contact C4 ON C1.id<>C4.id
+                    LEFT JOIN contact C5 ON C1.id<>C5.id
+                LIMIT 100;
+
+            INSERT INTO `contact` (`title`, `name`, `email`, `supervisor_contact_id`)
+                SELECT
+                    (SELECT title FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT name FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT email FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT supervisor_contact_id FROM contact ORDER BY RAND() LIMIT 1)
+                FROM
+                    contact C1
+                    LEFT JOIN contact C2 ON C1.id<>C2.id
+                    LEFT JOIN contact C3 ON C1.id<>C3.id
+                    LEFT JOIN contact C4 ON C1.id<>C4.id
+                    LEFT JOIN contact C5 ON C1.id<>C5.id
+                LIMIT 900;
+
+                INSERT INTO `contact` (`title`, `name`, `email`, `supervisor_contact_id`)
+                SELECT
+                    (SELECT title FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT name FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT email FROM contact ORDER BY RAND() LIMIT 1),
+                    (SELECT supervisor_contact_id FROM contact ORDER BY RAND() LIMIT 1)
+                FROM
+                    contact C1
+                    LEFT JOIN contact C2 ON C1.id<>C2.id
+                    LEFT JOIN contact C3 ON C1.id<>C3.id
+                    LEFT JOIN contact C4 ON C1.id<>C4.id
+                    LEFT JOIN contact C5 ON C1.id<>C5.id
+                LIMIT 4000;
+        ]]></sql>
+    </changeSet>
+</databaseChangeLog>

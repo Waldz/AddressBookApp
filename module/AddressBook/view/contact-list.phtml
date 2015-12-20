@@ -1,0 +1,34 @@
+<?php
+
+/** @var \Application\View\ViewRenderer $this */
+/** @var \Auth\Model\User $currentUser */
+$currentUser = $data['currentUser'];
+/** @var \AddressBook\Model\Contact[] $contacts */
+$contacts = $data['contacts'];
+
+?>
+<? foreach($contacts as $contact) { ?>
+<li class="contact" data-contact-id="<?= $contact->getId() ?>">
+    <div class="contact-info">
+        <i class="contact-title"><?= $contact->getTitle() ?></i>,
+        <span class="contact-name"><?= $contact->getName() ?></span>,
+        <span class="contact-email"><?= $contact->getEmail() ?></span>
+        <? if (isset($currentUser)) { ?>
+            <a href="#" class="contact-new" data-contact-id="<?= $contact->getId() ?>" title="Add supervised person">
+                <i class="glyphicon glyphicon-plus"></i>
+            </a>
+            <a href="#" class="contact-delete" data-contact-id="<?= $contact->getId() ?>" title="Delete this contact">
+                <i class="glyphicon glyphicon-trash"></i>
+            </a>
+        <? } ?>
+    </div>
+
+    <ul class="contact-group">
+        <? if ($contact->hasSupervisedContacts()) { ?>
+            <?= $this->renderTemplate('contact-list', 'AddressBook', [
+                'contacts' => $contact->getSupervisedContacts(),
+            ]) ?>
+        <? } ?>
+    </ul>
+</li>
+<? } ?>

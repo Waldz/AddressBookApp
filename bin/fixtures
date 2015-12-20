@@ -1,0 +1,62 @@
+#!/usr/bin/env php
+<?php
+
+use Application\Application;
+use Application\Cli\Exec;
+
+try {
+    /** @var Application $application */
+    $application = require(__DIR__ . '/../init_application.php');
+    $configDb = $application->getServiceManager()->get('database.config');
+
+
+    // Load available fixtures
+    $fixtures = [];
+    foreach(glob('data/fixtures/*.xml', GLOB_BRACE) as $file) {
+        $fileInfo = pathinfo($file);
+        $fixtures[$fileInfo['filename']] = $file;
+    }
+
+    // Validate fixture
+    $fixtureName = $argv[1] ?: null;
+    if (!isset($fixtures[$fixtureName])) {
+        echo sprintf(
+            'Usage: %s (%s)',
+            $argv[0],
+            implode(', ', array_keys($fixtures))
+        );
+        exit(1);
+    }
+    $fixtureChangeset = $fixtures[$fixtureName];
+
+    // Clean DB to initial one
+    Exec::execWithOutput('bin/scratch');
+
+    // Import DB fixtures
+    echo 'Importing DB fixtures..';
+    $command = sprintf(
+        'vendor/bin/liquibase'
+            .' --classpath=vendor/joellarson/liquibase/lib'
+            .' --driver=com.mysql.jdbc.Driver'
+            .' --url="jdbc:mysql://%s:%d/%s"'
+            .' --username=%s'
+            .' --password=%s'
+            .' --changeLogFile=%s'
+            .' migrate',
+        $configDb['db_host'],
+        $configDb['db_port'],
+        $configDb['db_name'],
+        $configDb['db_user'],
+        $configDb['db_password'],
+        $fixtureChangeset
+    );
+    Exec::execWithOutput($command);
+
+} catch (\Exception $e) {
+    // In case of bootstrap error do not show blank screen.
+    echo $e->getMessage()."\n";
+    echo $e->getTraceAsString();
+}
+
+$application->shutdown();
+echo $application->debugGetOutput();

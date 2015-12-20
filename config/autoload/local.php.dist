@@ -1,0 +1,16 @@
+<?php
+
+return [
+
+    // Should print debug output
+    'debug' => true,
+    // IPs, which sees printed debug output
+    'debug_ips' => [],
+
+    'database' => [
+        'db_host'       => '127.0.0.1',
+        'db_user'       => 'root',
+        'db_password'   => '',
+    ],
+
+];
